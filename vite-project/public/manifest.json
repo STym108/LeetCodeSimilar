@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode Similar Questions",
+  "description": "Shows similar problems from GFG, CSES, Codeforces when viewing a LeetCode problem",
+  "version": "1.0",
+  "permissions": [
+      "scripting",
+      "activeTab",
+      "tabs",
+      "storage"  
+  ],
+  "host_permissions": ["https://leetcode.com/*"],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "coin.png",
+      "32": "coin.png",
+      "48": "coin.png",
+      "128": "coin.png"
+    }
+  },
+  "background": {
+      "service_worker": "background.js" 
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*", "https://www.leetcode.com/problems/*"],
+      "js": ["content.js"], 
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected_bundle.js","coin.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
