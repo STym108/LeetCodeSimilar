@@ -50,29 +50,31 @@ function injectFloatingIconWithPopup() {
   hoverBox.style.fontSize = "14px";
   hoverBox.style.display = "none";
   hoverBox.style.minWidth = "220px";
+  hoverBox.innerText = "Loading..."; // default while data loads
 
-  const title = getLeetcodeTitle(); // Get title from existing function
+  const title = getLeetcodeTitle(); // Already defined by you
 
-  // Fetch related data from backend
-  fetch(`http://localhost:5001/related?title=${encodeURIComponent(title)}`)
-    .then((res) => res.json())
-    .then((data) => {
+  // ✅ Fetch related questions from your backend
+  const res = fetch(`https://leet-code-similar.vercel.app/related?title=${encodeURIComponent(title)}`)
+      .then(res => res.json())
+    .then(data => {
       const related = data?.data;
       if (related && Object.keys(related).length > 0) {
         hoverBox.innerHTML = `<div><strong>Similar Questions:</strong></div><ul style="list-style:none; padding: 8px 0 0 0; margin:0;">`;
-        for (const [platform, question] of Object.entries(related)) {
-          hoverBox.innerHTML += `<li style="padding: 4px 0;"><a href="${question}" target="_blank" style="color: #4ea1ff; text-decoration: none;">${platform}</a></li>`;
+        for (const [platform, link] of Object.entries(related)) {
+          hoverBox.innerHTML += `<li style="padding: 4px 0;"><a href="${link}" target="_blank" style="color: #4ea1ff; text-decoration: none;">${platform}</a></li>`;
         }
         hoverBox.innerHTML += `</ul>`;
       } else {
         hoverBox.innerHTML = "<div>No similar questions found.</div>";
       }
     })
-    .catch((err) => {
-      console.error("Failed to fetch related questions:", err);
-      hoverBox.innerHTML = "<div>Error loading suggestions.</div>";
+    .catch(err => {
+      console.error("Error fetching from backend:", err);
+      hoverBox.innerHTML = "<div>Error loading similar questions.</div>";
     });
 
+  // Show popup on hover
   icon.addEventListener("mouseenter", () => {
     hoverBox.style.display = "block";
   });

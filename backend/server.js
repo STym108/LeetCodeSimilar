@@ -1,10 +1,14 @@
 import express from 'express'
 import dotenv from 'dotenv'
 dotenv.config();
+import cors from 'cors'; // ✅ Add this
+const app=express();
+app.use(cors()); // ✅ Enable CORS
+
 import cookieParser from 'cookie-parser'
 import { connectwithmongo } from './connection.js';
 import mongoose from 'mongoose';
-const app=express();
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -16,7 +20,9 @@ const Relatedschema=new mongoose.Schema({
     data:Object
 })
 const Relatedcollection=mongoose.model("RelatedQuestion",Relatedschema)
-
+app.get('/', (req, res) => {
+    res.send("LeetCode Similar Questions API is running.");
+  });
 app.get('/related',async (req,res)=>{
     try{
         const {title}=req.query;
